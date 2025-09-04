@@ -1,0 +1,6 @@
+snake_update()
+# print_grid()
+# time.sleep(1)
+# move_down()
+# snake_update()
+# print_grid()

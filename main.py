@@ -1,7 +1,9 @@
-import time
+import keyboard
+import os
+import asyncio
 
-ROW = 11
-COLUMN = 11
+ROW = 30
+COLUMN = 30
 
 BACKGROUND = " ."
 
@@ -9,7 +11,17 @@ GRID = [BACKGROUND for _ in range(ROW*COLUMN)]
 
 SNAKE_POS = []
 SNAKE_TEXTURE = " @"
-SNAKE_LENGTH = 2
+SNAKE_LENGTH = 10
+
+GAME_LOOP = True
+
+UP = False
+DOWN = False
+RIGHT = False
+LEFT = False
+
+FPS = 30
+
 
 def print_grid():
     grid = GRID.copy()
@@ -45,32 +57,61 @@ def snake_update():
         GRID.insert(SNAKE_POS[len(SNAKE_POS)-1],BACKGROUND)
         SNAKE_POS.pop(len(SNAKE_POS)-1)
     GRID[SNAKE_POS[0]] = SNAKE_TEXTURE
-    # print(SNAKE_POS)
-    # print(SNAKE_POS[len(SNAKE_POS)-1])
-    # print(SNAKE_POS[0])
-    # print(GRID)
+
+def clear_window():
+    os.system("cls")
+
+async def event_checker():
+
+    global UP
+    global DOWN
+    global RIGHT
+    global LEFT
+
+    if keyboard.is_pressed("w"):
+        UP = True
+        DOWN = False
+        RIGHT = False
+        LEFT = False
+    if keyboard.is_pressed("s"):
+        UP = False
+        DOWN = True
+        RIGHT = False
+        LEFT = False
+    if keyboard.is_pressed("a"):
+        UP = False
+        DOWN = False
+        RIGHT = False
+        LEFT = True
+    if keyboard.is_pressed("d"):
+        UP = False
+        DOWN = False
+        RIGHT = True
+        LEFT = False
+
+async def update_window():
+    clear_window()
+    snake_update()
+    print_grid()
+    await asyncio.sleep(1/FPS)
+
+def snake_move():
+    if UP:
+        move_up()
+    if DOWN:
+        move_down()
+    if RIGHT:
+        move_right()
+    if LEFT:
+        move_left()
+
+while GAME_LOOP:
+    asyncio.run(event_checker())
+    snake_move()
+    asyncio.run(update_window())
+    
 
 
-# snake_update()
-# print_grid()
-# time.sleep(1)
-# move_down()
-# snake_update()
-# print_grid()
-# time.sleep(1)
-# move_left()
-# snake_update()
-# print_grid()
-# time.sleep(1)
-# move_left()
-# snake_update()
-# print_grid()
-# time.sleep(1)
-# move_up()
-# snake_update()
-# print_grid()
-# time.sleep(1)
-# move_right()
-# snake_update()
-# print_grid()
+    
+
 

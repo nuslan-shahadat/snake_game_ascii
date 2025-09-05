@@ -3,10 +3,10 @@ import os
 import asyncio
 import random
 
-ROW = 10
-COLUMN = 20
+ROW = 30
+COLUMN = 30
 
-BACKGROUND = " `"
+BACKGROUND = " ."
 FOOD_TEXTURE = " #"
 SNAKE_TEXTURE = " 0"
 
@@ -22,12 +22,14 @@ DOWN = False
 RIGHT = False
 LEFT = False
 
-FPS = 30
+FPS = 100
 
 RANDOM_FOOD = 2
 CURRENT_MOVE = 0
 
 DIFF = (ROW*COLUMN)-ROW
+
+SCORE = 0
 
 
 def print_grid():
@@ -82,7 +84,6 @@ def snake_update():
 
     if SNAKE_POS[0] % ROW != ROW-1 and SNAKE_POS[0] % ROW != 0 :
         GRID[int(SNAKE_POS[0])] = SNAKE_TEXTURE
-    print(SNAKE_POS)
 
 
 
@@ -120,6 +121,8 @@ async def event_checker():
 async def update_window():
     clear_window()
     snake_update()
+    score_str = f"SCORE: {SCORE}"
+    print(((ROW//2)-(len(score_str)//2)+2)*"  ",score_str)
     print_grid()
     await asyncio.sleep(1/FPS)
 
@@ -153,19 +156,21 @@ def snake_move():
         move_left()
 
 async def food_update():
+    global SCORE
     global SNAKE_LENGTH
     global RANDOM_FOOD
     GRID[RANDOM_FOOD] = FOOD_TEXTURE
     if SNAKE_POS[0] == RANDOM_FOOD:
         SNAKE_LENGTH += 1
+        SCORE += ROW
         GRID[RANDOM_FOOD] = SNAKE_TEXTURE
         generate_random_food()
 
 
 while GAME_LOOP:
     asyncio.run(event_checker())
-    snake_move()
     asyncio.run(update_window())
+    snake_move()
     asyncio.run(food_update())
     
 

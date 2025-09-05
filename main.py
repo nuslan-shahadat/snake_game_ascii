@@ -21,10 +21,11 @@ DOWN = False
 RIGHT = False
 LEFT = False
 
-FPS = 60
+FPS = 30
 
 FOOD_TEXTURE = " O"
-RANDOM_FOOD = 0
+RANDOM_FOOD = 2
+CURRENT_MOVE = 0
 
 
 def print_grid():
@@ -41,51 +42,26 @@ def mid_index():
 
 def generate_random_food():
     global RANDOM_FOOD
-    RANDOM_FOOD = random.randint(0,(ROW*COLUMN)-1)
-    for i in SNAKE_POS:
-        if i == RANDOM_FOOD or i == mid_index():
-            return generate_random_food
-    return RANDOM_FOOD
+    RANDOM_FOOD = random.choice(list(set(i for i in range(ROW*COLUMN))-set(SNAKE_POS)))
 
 def move_up():
-    
-    if SNAKE_POS[0] < ROW and UP == True:
-        GRID[-(ROW-SNAKE_POS[0])] = SNAKE_TEXTURE
-        SNAKE_POS.insert(0,-(ROW-SNAKE_POS[0]))
-        SNAKE_POS.pop(-1)
-    else:
-        SNAKE_POS.insert(0,(SNAKE_POS[0]-ROW))
+    SNAKE_POS.insert(0,abs(SNAKE_POS[0]-ROW))
 
 def move_down():
-    if SNAKE_POS[0] > (ROW*COLUMN)-ROW-1 and DOWN == True:
-        GRID[ROW-SNAKE_POS[0]+1] = SNAKE_TEXTURE
-        SNAKE_POS.insert(0,ROW-SNAKE_POS[0]+1)
-        SNAKE_POS.pop(-1)
-    else:
-        SNAKE_POS.insert(0,(SNAKE_POS[0]+ROW))
+    SNAKE_POS.insert(0,abs(SNAKE_POS[0]+ROW))
 
 
 def move_right():
-    if SNAKE_POS[0] % ROW == ROW-1 and RIGHT == True:
-        GRID[SNAKE_POS[0]-ROW+1] = SNAKE_TEXTURE
-        SNAKE_POS.insert(0,(SNAKE_POS[0]-ROW+1))
-        SNAKE_POS.pop(-1)
-    else:
-        SNAKE_POS.insert(0,(SNAKE_POS[0]+1))
+    SNAKE_POS.insert(0,abs(SNAKE_POS[0]+1))
 
 def move_left():
-    if SNAKE_POS[0] % ROW == 0 and LEFT == True:
-        GRID[SNAKE_POS[0]+ROW-1] = SNAKE_TEXTURE
-        SNAKE_POS.insert(0,(SNAKE_POS[0]+ROW-1))
-        SNAKE_POS.pop(-1)
-    else:
-        SNAKE_POS.insert(0,(SNAKE_POS[0]-1))
+    SNAKE_POS.insert(0,abs(SNAKE_POS[0]-1))
 
 
 def snake_update():
     if len(SNAKE_POS) == 0:
         SNAKE_POS.insert(0,mid_index())
-        # SNAKE_POS.insert(0,mid_index())
+        SNAKE_POS.insert(0,mid_index())
 
     if len(SNAKE_POS) > SNAKE_LENGTH:
         
@@ -96,11 +72,6 @@ def snake_update():
     print(SNAKE_POS)
 
 
-
-def food_update():
-    RANDOM_FOOD = generate_random_food()
-    print(RANDOM_FOOD)
-    GRID[int(RANDOM_FOOD)] = FOOD_TEXTURE
 
 def clear_window():
     os.system("cls")
@@ -140,30 +111,49 @@ async def update_window():
     await asyncio.sleep(1/FPS)
 
 def snake_move():
-    if UP:
+
+    global CURRENT_MOVE
+
+    if UP and CURRENT_MOVE != 2:
+        CURRENT_MOVE = 1
+
+    if DOWN and CURRENT_MOVE != 1:
+        CURRENT_MOVE = 2
+
+    if RIGHT and CURRENT_MOVE != 4:
+        CURRENT_MOVE = 3
+
+    if LEFT and CURRENT_MOVE != 3:
+        CURRENT_MOVE = 4
+    
+    
+    if CURRENT_MOVE == 1:
         move_up()
-    if DOWN:
+
+    if CURRENT_MOVE == 2:
         move_down()
-    if RIGHT:
+
+    if CURRENT_MOVE == 3:
         move_right()
-    if LEFT:
+
+    if CURRENT_MOVE == 4:
         move_left()
 
-FOOD_POS = generate_random_food()
-food_update()
-async def check_food():
+async def food_update():
     global SNAKE_LENGTH
-    for i in SNAKE_POS:
-        if i == RANDOM_FOOD:
-            food_update()
-            SNAKE_LENGTH += 1
+    global RANDOM_FOOD
+    GRID[RANDOM_FOOD] = FOOD_TEXTURE
+    if SNAKE_POS[0] == RANDOM_FOOD:
+        SNAKE_LENGTH += 1
+        GRID[RANDOM_FOOD] = SNAKE_TEXTURE
+        generate_random_food()
 
 
 while GAME_LOOP:
     asyncio.run(event_checker())
     snake_move()
-    asyncio.run(check_food())
     asyncio.run(update_window())
+    asyncio.run(food_update())
     
 
 

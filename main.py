@@ -6,12 +6,13 @@ import random
 ROW = 20
 COLUMN = 20
 
-BACKGROUND = " ."
+BACKGROUND = " `"
+FOOD_TEXTURE = " #"
+SNAKE_TEXTURE = " 0"
 
 GRID = [BACKGROUND for _ in range(ROW*COLUMN)]
 
 SNAKE_POS = []
-SNAKE_TEXTURE = " @"
 SNAKE_LENGTH = 3
 
 GAME_LOOP = True
@@ -23,9 +24,10 @@ LEFT = False
 
 FPS = 30
 
-FOOD_TEXTURE = " O"
 RANDOM_FOOD = 2
 CURRENT_MOVE = 0
+
+DIFF = (ROW*COLUMN)-ROW
 
 
 def print_grid():
@@ -45,22 +47,33 @@ def generate_random_food():
     RANDOM_FOOD = random.choice(list(set(i for i in range(ROW*COLUMN))-set(SNAKE_POS)))
 
 def move_up():
-    SNAKE_POS.insert(0,abs(SNAKE_POS[0]-ROW))
+    if SNAKE_POS[0] <= ROW and UP == True:
+        SNAKE_POS.insert(0,SNAKE_POS[0]+DIFF)
+    else:
+        SNAKE_POS.insert(0,SNAKE_POS[0]-ROW)
 
 def move_down():
-    SNAKE_POS.insert(0,abs(SNAKE_POS[0]+ROW))
+    if SNAKE_POS[0] >= DIFF and DOWN == True:
+        SNAKE_POS.insert(0,SNAKE_POS[0]-DIFF)
+    else:
+        SNAKE_POS.insert(0,SNAKE_POS[0]+ROW)
 
 
 def move_right():
-    SNAKE_POS.insert(0,abs(SNAKE_POS[0]+1))
+    if (SNAKE_POS[0] % ROW == ROW-1) and RIGHT == True:
+        SNAKE_POS.insert(0,SNAKE_POS[0]-ROW+1)
+    else:
+        SNAKE_POS.insert(0,SNAKE_POS[0]+1)
 
 def move_left():
-    SNAKE_POS.insert(0,abs(SNAKE_POS[0]-1))
+    if (SNAKE_POS[0] % ROW == 0) and LEFT == True:
+        SNAKE_POS.insert(0,SNAKE_POS[0]+ROW-1)
+    else:
+        SNAKE_POS.insert(0,SNAKE_POS[0]-1)
 
 
 def snake_update():
     if len(SNAKE_POS) == 0:
-        SNAKE_POS.insert(0,mid_index())
         SNAKE_POS.insert(0,mid_index())
 
     if len(SNAKE_POS) > SNAKE_LENGTH:
@@ -126,7 +139,7 @@ def snake_move():
     if LEFT and CURRENT_MOVE != 3:
         CURRENT_MOVE = 4
     
-    
+
     if CURRENT_MOVE == 1:
         move_up()
 

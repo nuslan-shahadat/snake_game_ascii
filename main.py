@@ -3,7 +3,7 @@ import os
 import asyncio
 import random
 
-ROW = 20
+ROW = 10
 COLUMN = 20
 
 BACKGROUND = " `"
@@ -13,7 +13,7 @@ SNAKE_TEXTURE = " 0"
 GRID = [BACKGROUND for _ in range(ROW*COLUMN)]
 
 SNAKE_POS = []
-SNAKE_LENGTH = 3
+SNAKE_LENGTH = 2
 
 GAME_LOOP = True
 
@@ -47,7 +47,7 @@ def generate_random_food():
     RANDOM_FOOD = random.choice(list(set(i for i in range(ROW*COLUMN))-set(SNAKE_POS)))
 
 def move_up():
-    if SNAKE_POS[0] <= ROW and UP == True:
+    if SNAKE_POS[0] < ROW and UP == True:
         SNAKE_POS.insert(0,SNAKE_POS[0]+DIFF)
     else:
         SNAKE_POS.insert(0,SNAKE_POS[0]-ROW)
@@ -77,9 +77,9 @@ def snake_update():
         SNAKE_POS.insert(0,mid_index())
 
     if len(SNAKE_POS) > SNAKE_LENGTH:
-        
         GRID[SNAKE_POS[-1]] = BACKGROUND
         SNAKE_POS.pop(-1)
+
     if SNAKE_POS[0] % ROW != ROW-1 and SNAKE_POS[0] % ROW != 0 :
         GRID[int(SNAKE_POS[0])] = SNAKE_TEXTURE
     print(SNAKE_POS)

@@ -2,9 +2,10 @@ import keyboard
 import os
 import asyncio
 import random
+import math
 
-ROW = 30
-COLUMN = 30
+ROW = 15
+COLUMN = 15
 
 BACKGROUND = " ."
 FOOD_TEXTURE = " #"
@@ -22,7 +23,7 @@ DOWN = False
 RIGHT = False
 LEFT = False
 
-FPS = 100
+FPS = 600
 
 RANDOM_FOOD = 2
 CURRENT_MOVE = 0
@@ -30,6 +31,7 @@ CURRENT_MOVE = 0
 DIFF = (ROW*COLUMN)-ROW
 
 SCORE = 0
+SCORE_VALUE = 10
 
 
 def print_grid():
@@ -162,17 +164,40 @@ async def food_update():
     GRID[RANDOM_FOOD] = FOOD_TEXTURE
     if SNAKE_POS[0] == RANDOM_FOOD:
         SNAKE_LENGTH += 1
-        SCORE += ROW
+        SCORE += SCORE_VALUE
         GRID[RANDOM_FOOD] = SNAKE_TEXTURE
         generate_random_food()
 
-
+def death_check():
+    global GAME_LOOP
+    for index,i in enumerate(SNAKE_POS):
+        if index != 0:
+            if i == SNAKE_POS[0]:
+                GAME_LOOP = False
 while GAME_LOOP:
     asyncio.run(event_checker())
-    asyncio.run(update_window())
     snake_move()
+    asyncio.run(update_window())
     asyncio.run(food_update())
-    
+    death_check()
+clear_window()
+final_str = f"Final Score: {SCORE}"
+game_over_str = "GAME OVER" 
+
+extra1 = 3
+extra2 = 5
+print(
+    f"""
+        {ROW*"##"}
+        {"#"+(ROW-2)*"  "+"  #"}
+        {"#"+((math.ceil((ROW-len(game_over_str))/2)-1)+extra1)*"  "+game_over_str+((ROW-(math.ceil((ROW-len(game_over_str))/2)+math.ceil(len(game_over_str)/2)+1))-extra1)*"  "+"  #"}
+        {"#"+(ROW-2)*"  "+"  #"}
+        {ROW*"##"}
+        {"#"+(ROW-2)*"  "+"  #"}
+        {"#"+((math.ceil((ROW-len(final_str))/2)-1)+extra2)*"  "+final_str+((ROW-(math.ceil((ROW-len(final_str))/2)+math.ceil(len(final_str)/2)+1))-extra2)*"  "+"  #"}
+        {"#"+(ROW-2)*"  "+"  #"}
+        {ROW*"##"}
+    """)
 
 
     

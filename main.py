@@ -3,6 +3,7 @@ import os
 import asyncio
 import random
 import math
+import sys
 
 ROW = 15
 COLUMN = 15
@@ -196,7 +197,13 @@ print(
         {"#"+((math.ceil((ROW-len(final_str))/2)-1)+extra2)*"  "+final_str+((ROW-(math.ceil((ROW-len(final_str))/2)+math.ceil(len(final_str)/2)+1))-extra2)*"  "+"  #"}
         {"#"+(ROW-2)*"  "+"  #"}
         {ROW*"##"}
+
+
+        press 'esc' to leave.....
     """)
+keyboard.wait("esc")
+clear_window()
+sys.exit()
 
 
     

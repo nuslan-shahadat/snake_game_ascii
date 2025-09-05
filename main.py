@@ -84,8 +84,7 @@ def snake_update():
         GRID[SNAKE_POS[-1]] = BACKGROUND
         SNAKE_POS.pop(-1)
 
-    if SNAKE_POS[0] % ROW != ROW-1 and SNAKE_POS[0] % ROW != 0 :
-        GRID[int(SNAKE_POS[0])] = SNAKE_TEXTURE
+    GRID[int(SNAKE_POS[0])] = SNAKE_TEXTURE
 
 
 

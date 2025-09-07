@@ -24,7 +24,7 @@ DOWN = False
 RIGHT = False
 LEFT = False
 
-FPS = 600
+FPS = 10
 
 RANDOM_FOOD = 2
 CURRENT_MOVE = 0
@@ -160,11 +160,13 @@ def snake_move():
 async def food_update():
     global SCORE
     global SNAKE_LENGTH
+    global FPS
     global RANDOM_FOOD
     GRID[RANDOM_FOOD] = FOOD_TEXTURE
     if SNAKE_POS[0] == RANDOM_FOOD:
         SNAKE_LENGTH += 1
         SCORE += SCORE_VALUE
+        FPS += 5
         GRID[RANDOM_FOOD] = SNAKE_TEXTURE
         generate_random_food()
 
@@ -182,7 +184,7 @@ while GAME_LOOP:
     death_check()
 clear_window()
 final_str = f"Final Score: {SCORE}"
-game_over_str = "GAME OVER" 
+game_over_str = "GAME OVER " 
 
 extra1 = 3
 extra2 = 5
@@ -199,9 +201,9 @@ print(
         {ROW*"##"}
 
 
-        press 'esc' to leave.....
+        press 'enter' to leave.....
     """)
-keyboard.wait("esc")
+keyboard.wait("enter")
 clear_window()
 sys.exit()
 
